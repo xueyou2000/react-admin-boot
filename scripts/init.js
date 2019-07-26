@@ -11,13 +11,13 @@ const envinfo = require("envinfo");
  * @param {*} cmd
  */
 function updatePackageFile(appDir, cmd) {
-    const packagePath = path.resolve(appDir, "_package.json");
+    const packagePath = path.join(appDir, "_package.json");
     const packageJson = fs.readJSONSync(packagePath);
     packageJson.name = cmd.name;
     packageJson.description = cmd.desc;
 
     fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 4));
-    fs.renameSync(packagePath, path.resolve(appDir, "package.json"));
+    fs.renameSync(packagePath, path.join(appDir, "package.json"));
 }
 
 /**
@@ -77,12 +77,12 @@ module.exports = (project_directory, cmd) => {
     updatePackageFile(project_directory, cmd);
 
     // 4. remove no-use file
-    fs.removeSync(path.resolve(appDir, "/resources/application.yml"));
-    fs.removeSync(path.resolve(appDir, "/resources/application-dev.yml"));
-    fs.removeSync(path.resolve(appDir, "/resources/application-pro.yml"));
-    fs.removeSync(path.resolve(appDir, "/config"));
-    fs.removeSync(path.resolve(appDir, "/mocks"));
-    fs.removeSync(path.resolve(appDir, "/static"));
+    fs.removeSync(path.join(appDir, "/resources/application.yml"));
+    fs.removeSync(path.join(appDir, "/resources/application-dev.yml"));
+    fs.removeSync(path.join(appDir, "/resources/application-pro.yml"));
+    fs.removeSync(path.join(appDir, "/config"));
+    fs.removeSync(path.join(appDir, "/mocks"));
+    fs.removeSync(path.join(appDir, "/static"));
 
     // 5. install
     install(appDir);
