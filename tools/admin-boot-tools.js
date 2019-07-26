@@ -1,20 +1,21 @@
 const YAML = require("yaml");
 const fs = require("fs-extra");
-const path = require("../config/path");
+const PATHS = require("../config/path");
+const _ = require("lodash");
 
 /**
  * 获取yml配置
  * @param {String} env 指定环境
  */
-function configByYml(env) {
+function configByBootYml(env) {
     const resources = "template/resources";
 
-    const baseConfig = YAML.parse(fs.readFileSync(path.resolveAdminBoot(`${resources}/application.yml`), { encoding: "UTF-8" }));
-    const envConfig = YAML.parse(fs.readFileSync(path.resolveAdminBoot(`${resources}/application-${env}.yml`), { encoding: "UTF-8" }));
+    const baseConfig = YAML.parse(fs.readFileSync(PATHS.resolveAdminBoot(`${resources}/application.yml`), { encoding: "UTF-8" }));
+    const envConfig = YAML.parse(fs.readFileSync(PATHS.resolveAdminBoot(`${resources}/application-${env}.yml`), { encoding: "UTF-8" }));
 
-    return Object.assign({}, baseConfig, envConfig);
+    return _.merge({}, baseConfig, envConfig);
 }
 
 module.exports = {
-    configByYml,
+    configByBootYml,
 };

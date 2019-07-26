@@ -8,8 +8,8 @@ webpack:
         filename: js/[name].js
     devServer:
         port: 8080
-        proxy:
-            /wechat: http://192.168.1.211:8081
+        # proxy:
+        #     /wechat: http://192.168.1.211:8081
 
 # 环境变量
 variable:

@@ -11,6 +11,7 @@ const ManifestPlugin = require("webpack-manifest-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const PATHS = require("../config/path");
 const Glob = require("glob");
+const { readConfig } = require("../tools/index");
 
 export default (config, devMode, multiple) => {
     const { webpackConfig } = config;
@@ -19,7 +20,7 @@ export default (config, devMode, multiple) => {
     return {
         context: PATHS.projectDirectory,
         entry: entries,
-        devtool: webpackConfig.devtool,
+        devtool: readConfig(config, "webpack.devtool"),
         devServer: webpackConfig.devServer,
         output: webpackConfig.output,
         mode: devMode ? "development" : "production",
@@ -149,7 +150,7 @@ function getPlugins(config, devMode, multiple) {
 function webpackVariablePlugin(config) {
     const variable = {};
     for (let variableName in config.variable) {
-        variable[`process.env.${variableName}`] = JSON.stringify(config.variable[variableName]);
+        variable[`process.env.${variableName}`] = JSON.stringify(readConfig(config, `variable.${variableName}`));
     }
     return new Webpack.DefinePlugin(variable);
 }
