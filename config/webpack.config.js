@@ -10,22 +10,26 @@ const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const PATHS = require("../config/path");
+const Glob = require("glob");
 
-export default (config, devMode) => {
+export default (config, devMode, multiple) => {
+    const { webpackConfig } = config;
+    const { entries, htmlWebpackPlugins } = multiple ? findPages(config) : { entries: webpackConfig.entry, htmlWebpackPlugins: [] };
+
     return {
         context: PATHS.projectDirectory,
-        entry: "./src/main.tsx",
-        devtool: config.devtool,
-        devServer: config.devServer,
+        entry: entries,
+        devtool: webpackConfig.devtool,
+        devServer: webpackConfig.devServer,
+        output: webpackConfig.output,
         mode: devMode ? "development" : "production",
-        output: config.output,
         resolve: {
             extensions: [".ts", ".tsx", ".js", ".jsx"],
             alias: {
                 "@": Path.join(__dirname, "src"),
             },
         },
-        externals: devMode ? {} : config.externals,
+        externals: devMode ? {} : webpackConfig.externals,
         module: {
             rules: [
                 {
@@ -93,7 +97,7 @@ export default (config, devMode) => {
                 },
             },
         },
-        plugins: getPlugins(config, devMode),
+        plugins: getPlugins(config, devMode, multiple).concat(htmlWebpackPlugins),
     };
 };
 
@@ -102,21 +106,25 @@ export default (config, devMode) => {
  * @param config    配置
  * @param devMode   是否开发模式
  */
-function getPlugins(config, devMode) {
+function getPlugins(config, devMode, multiple) {
     let environmentPlugins = [];
     const basePlugins = [
         webpackVariablePlugin(config),
         new CaseSensitivePathsPlugin(),
         new HardSourceWebpackPlugin(),
-        new CopyWebpackPlugin([{ from: Path.resolve("static/**/*"), to: Path.resolve(config.output) }]),
-        new HtmlWebpackPlugin({
-            filename: "index.html",
-            template: PATHS.resolveProject("resources/template.html"),
-            inject: true,
-            publicPath: config.output.publicPath,
-            env: devMode ? "development" : "production",
-        }),
+        new CopyWebpackPlugin([{ from: Path.resolve("static/**/*"), to: Path.resolve(config.webpackConfig.output) }]),
     ];
+    if (!multiple) {
+        basePlugins.push(
+            new HtmlWebpackPlugin({
+                filename: "index.html",
+                template: PATHS.resolveProject("resources/template.html"),
+                inject: true,
+                publicPath: config.webpackConfig.output.publicPath,
+                env: devMode ? "development" : "production",
+            }),
+        );
+    }
 
     if (devMode) {
         environmentPlugins = [new Webpack.HotModuleReplacementPlugin(), new FriendlyErrorsWebpackPlugin()];
@@ -144,4 +152,35 @@ function webpackVariablePlugin(config) {
         variable[`process.env.${variableName}`] = JSON.stringify(config.variable[variableName]);
     }
     return new Webpack.DefinePlugin(variable);
+}
+
+/**
+ * 寻找页面
+ * @param config    配置
+ */
+function findPages(config) {
+    const entries = {};
+    const htmlWebpackPlugins = [];
+
+    Glob.sync(PATHS.resolveProject("src/pages/*/config.json")).forEach((entry) => {
+        const dirname = Path.dirname(entry);
+        const name = Path.basename(dirname);
+        const pageConfig = require(entry);
+
+        console.log("✔ \t", pageConfig);
+
+        entries[name] = `${dirname}/index.tsx`;
+        htmlWebpackPlugins.push(
+            new HtmlWebpackPlugin({
+                filename: `${name}.html`,
+                template: pageConfig.userDefaultPage ? "index.html" : `${dirname}/index.html`,
+                inject: true,
+                title: pageConfig.title,
+                publicPath: config.webpackConfig.output.publicPath,
+            }),
+        );
+    });
+
+    console.log("\n\n");
+    return { entries, htmlWebpackPlugins };
 }

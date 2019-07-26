@@ -71,7 +71,7 @@ module.exports = (project_directory, cmd) => {
     fs.ensureDirSync(appDir);
 
     // 2. copy template to app directory
-    fs.copySync(path.resolve(appDir, "template"), appDir);
+    fs.copySync(PATHS.resolveAdminBoot("template"), appDir);
 
     // 3. update package.json
     updatePackageFile(project_directory, cmd);

@@ -41,4 +41,5 @@ function spawnAsync(command, args, options) {
 
 module.exports = {
     readConfig,
+    spawnAsync,
 };
