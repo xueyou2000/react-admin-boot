@@ -1,0 +1,4 @@
+# webpack 配置
+webpack:
+    output:
+        path: dist

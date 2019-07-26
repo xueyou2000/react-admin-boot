@@ -1,0 +1,14 @@
+# webpack 配置
+webpack:
+    mode: production
+    devtool: false
+    output:
+        publicPath: /
+        filename: js/[name]-[contenthash:5].js
+    externals:
+        react: React
+        react-dom: ReactDOM
+
+# 环境变量
+variable:
+    NODE_ENV: development
