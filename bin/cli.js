@@ -3,6 +3,7 @@ const chalk = require("chalk").default;
 const packageInfo = require("../package.json");
 const init = require("../scripts/init");
 const start = require("../scripts/start");
+const test = require("../scripts/test");
 
 const program = new commander.Command(`${chalk.redBright(packageInfo.name)}`).version(packageInfo.version).description(`${chalk.cyan(packageInfo.description)}`);
 
@@ -24,6 +25,13 @@ program
     .option("-e, --env [value]", "指定启用环境", "dev")
     .option("-s, --multiple", "是否多页")
     .action(start);
+
+// test
+program
+    .command("test")
+    .description(chalk.cyan("单元测试"))
+    .option("-t, --test [value]", "指定匹配的 describe 或 test 的名称")
+    .action(test);
 
 // 开始cli
 program.parse(process.argv);
