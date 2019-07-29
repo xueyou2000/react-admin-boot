@@ -1,8 +1,10 @@
+#!/usr/bin/env node
 const commander = require("commander");
 const chalk = require("chalk").default;
 const packageInfo = require("../package.json");
 const init = require("../scripts/init");
 const start = require("../scripts/start");
+const build = require("../scripts/build");
 const test = require("../scripts/test");
 
 const program = new commander.Command(`${chalk.redBright(packageInfo.name)}`).version(packageInfo.version).description(`${chalk.cyan(packageInfo.description)}`);
@@ -25,6 +27,14 @@ program
     .option("-e, --env [value]", "指定启用环境", "dev")
     .option("-s, --multiple", "是否多页")
     .action(start);
+
+// build
+program
+    .command("build")
+    .description(chalk.cyan("编译项目"))
+    .option("-e, --env [value]", "指定启用环境", "pro")
+    .option("-s, --multiple", "是否多页")
+    .action(build);
 
 // test
 program
