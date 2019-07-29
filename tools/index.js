@@ -4,6 +4,7 @@ const path = require("path");
 const PATHS = require("../config/path");
 const os = require("os");
 const apiMocker = require("mocker-api");
+const fs = require("fs-extra");
 
 /**
  * 获取内网ip
@@ -118,8 +119,20 @@ function converWebpackConfig(config, cmd) {
     return config;
 }
 
+/**
+ * 合并postcss配置
+ */
+function postcssConfig() {
+    if (fs.exists(PATHS.resolveProject("config/postcss.config.js"))) {
+        return PATHS.resolveProject("config");
+    } else {
+        return PATHS.resolveAdminBoot("config");
+    }
+}
+
 module.exports = {
     readConfig,
     spawnAsync,
     converWebpackConfig,
+    postcssConfig,
 };

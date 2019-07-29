@@ -11,7 +11,7 @@ const ManifestPlugin = require("webpack-manifest-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const PATHS = require("../config/path");
 const Glob = require("glob");
-const { readConfig } = require("../tools/index");
+const { readConfig, postcssConfig } = require("../tools/index");
 const path = require("path");
 
 module.exports = (config, devMode, multiple) => {
@@ -65,7 +65,7 @@ module.exports = (config, devMode, multiple) => {
                                   loader: require.resolve("postcss-loader"),
                                   options: {
                                       config: {
-                                          path: PATHS.resolveAdminBoot("./config"),
+                                          path: postcssConfig(),
                                       },
                                   },
                               },
@@ -78,7 +78,7 @@ module.exports = (config, devMode, multiple) => {
                                   loader: require.resolve("postcss-loader"),
                                   options: {
                                       config: {
-                                          path: PATHS.resolveAdminBoot("./config"),
+                                          path: postcssConfig(),
                                       },
                                   },
                               },
