@@ -22,6 +22,7 @@ program
     .option("-p, --prot [value]", "开发服务器端口", "8080")
     .option("-m, --mock", "是否启用mock数据")
     .option("-e, --env [value]", "指定启用环境", "dev")
+    .option("-s, --multiple", "是否多页")
     .action(start);
 
 // 开始cli

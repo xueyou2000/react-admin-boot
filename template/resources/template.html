@@ -17,11 +17,9 @@
     <body>
         <div class="app" id="root"></div>
 
-        <script src="<%=htmlWebpackPlugin.options.publicPath%>static/js/polyfill.js"></script>
-        <%= htmlWebpackPlugin.options.env === 'development' &&
+        <% if (htmlWebpackPlugin.options.env !== 'development') { %>
         <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.4/umd/react.production.min.js"></script>
-        %> <%= htmlWebpackPlugin.options.env === 'development' &&
         <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.4/umd/react-dom.production.min.js"></script>
-        %>
+        <% } %>
     </body>
 </html>

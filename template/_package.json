@@ -9,7 +9,7 @@
     "scripts": {
         "test": "react-admin-boot test",
         "start": "react-admin-boot start --mock",
-        "build": "react-admin-boot build --env pro "
+        "build": "react-admin-boot build --env pro"
     },
     "devDependencies": {
         "@types/jest": "24.0.6",
