@@ -13,12 +13,13 @@ const PATHS = require("../config/path");
 const Glob = require("glob");
 const { readConfig, postcssConfig } = require("../tools/index");
 const path = require("path");
+const fs = require("fs-extra");
 
 module.exports = (config, devMode, cmd) => {
     const { webpack } = config;
     const { entries, htmlWebpackPlugins } = cmd.multiple ? findPages(webpack) : { entries: webpack.entry, htmlWebpackPlugins: [] };
 
-    return {
+    const baseConfig = {
         context: PATHS.projectDirectory,
         entry: entries,
         devtool: readConfig(config, "webpack.devtool"),
@@ -125,6 +126,13 @@ module.exports = (config, devMode, cmd) => {
         },
         plugins: getPlugins(config, devMode, cmd).concat(htmlWebpackPlugins),
     };
+
+    if (fs.exists(PATHS.resolveProject("config/webpack.config.js"))) {
+        const customConfig = require(PATHS.resolveProject("config/webpack.config.js"));
+        return customConfig(baseConfig, devMode, cmd);
+    } else {
+        return baseConfig;
+    }
 };
 
 /**
