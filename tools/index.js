@@ -63,6 +63,14 @@ function spawnAsync(command, args, options) {
 }
 
 /**
+ * 转换正则中的特殊字符
+ * @param {*} regexpStr
+ */
+function converRegexp(regexpStr) {
+    return regexpStr.replace(/(\/|\*)/g, "\\$1");
+}
+
+/**
  * 转换为webpack配置
  * @param {*} config
  */
@@ -71,12 +79,15 @@ function converWebpackConfig(config, cmd) {
     const publicPath = readConfig(config, "webpack.output.publicPath");
     const baseUrl = publicPath.slice(0, publicPath.length - 1);
     const defaultDevServer = {
-        port: findHost(),
+        host: findHost(),
+        port: 8080,
         hot: true,
         inline: true,
         open: true,
         disableHostCheck: true,
         quiet: true,
+        publicPath: publicPath,
+        // contentBase: PATHS.projectDirectory,
     };
 
     // 转换 webpack.output.path 字符串配置到 路径
@@ -95,10 +106,12 @@ function converWebpackConfig(config, cmd) {
             for (let path in proxyConfig) {
                 proxy[path] = { target: proxyConfig[path] };
                 if (publicPath.split("/").length >= 3) {
-                    proxy[`${publicPath}${path}`] = {
+                    // 去掉 /chat/** 末尾的 /**
+                    const pathRewrite = /\/\*\*$/.test(path) ? path.replace(/\/\*\*$/, "") : path;
+                    proxy[`${baseUrl}${path}`] = {
                         target: proxyConfig[path],
                         pathRewrite: {
-                            [`${publicPath}${path}`]: path,
+                            [`${baseUrl}${path}`]: pathRewrite,
                         },
                     };
                 }
