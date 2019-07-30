@@ -1,4 +1,8 @@
 # webpack 配置
 webpack:
+    entry: ./src/main.tsx
     output:
         path: dist
+
+# 标题
+title: MyApp

@@ -14,9 +14,9 @@ const Glob = require("glob");
 const { readConfig, postcssConfig } = require("../tools/index");
 const path = require("path");
 
-module.exports = (config, devMode, multiple) => {
+module.exports = (config, devMode, cmd) => {
     const { webpack } = config;
-    const { entries, htmlWebpackPlugins } = multiple ? findPages(webpack) : { entries: webpack.entry, htmlWebpackPlugins: [] };
+    const { entries, htmlWebpackPlugins } = cmd.multiple ? findPages(webpack) : { entries: webpack.entry, htmlWebpackPlugins: [] };
 
     return {
         context: PATHS.projectDirectory,
@@ -123,7 +123,7 @@ module.exports = (config, devMode, multiple) => {
                 },
             },
         },
-        plugins: getPlugins(config, devMode, multiple).concat(htmlWebpackPlugins),
+        plugins: getPlugins(config, devMode, cmd).concat(htmlWebpackPlugins),
     };
 };
 
@@ -132,7 +132,7 @@ module.exports = (config, devMode, multiple) => {
  * @param config    配置
  * @param devMode   是否开发模式
  */
-function getPlugins(config, devMode, multiple) {
+function getPlugins(config, devMode, cmd) {
     let environmentPlugins = [];
     const basePlugins = [
         webpackVariablePlugin(config),
@@ -140,12 +140,13 @@ function getPlugins(config, devMode, multiple) {
         new HardSourceWebpackPlugin(),
         new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }]),
     ];
-    if (!multiple) {
+    if (!cmd.multiple) {
         basePlugins.push(
             new HtmlWebpackPlugin({
                 filename: "index.html",
                 template: PATHS.resolveProject("resources/template.html"),
                 inject: true,
+                title: config.title,
                 publicPath: config.webpack.output.publicPath,
                 env: devMode ? "development" : "production",
             }),
@@ -162,8 +163,10 @@ function getPlugins(config, devMode, multiple) {
             new MiniCssExtractPlugin({ filename: "css/[name].[contenthash:5].css" }),
             new OptimizeCSSAssetsPlugin(),
             new Webpack.optimize.ModuleConcatenationPlugin(),
-            new BundleAnalyzerPlugin(),
         ];
+        if (cmd.analyzer) {
+            environmentPlugins.push(new BundleAnalyzerPlugin());
+        }
     }
     return basePlugins.concat(environmentPlugins);
 }
@@ -199,7 +202,7 @@ function findPages(webpack) {
         htmlWebpackPlugins.push(
             new HtmlWebpackPlugin({
                 filename: `${name}.html`,
-                template: pageConfig.userDefaultPage ? "index.html" : `${dirname}/index.html`,
+                template: pageConfig.userDefaultPage ? PATHS.resolveProject("resources/template.html") : `${dirname}/index.html`,
                 inject: true,
                 title: pageConfig.title,
                 publicPath: webpack.output.publicPath,

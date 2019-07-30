@@ -32,6 +32,7 @@ program
 program
     .command("build")
     .description(chalk.cyan("编译项目"))
+    .option("-a, --analyzer", "是否启用代码分析")
     .option("-e, --env [value]", "指定启用环境", "pro")
     .option("-s, --multiple", "是否多页")
     .action(build);

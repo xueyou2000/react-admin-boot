@@ -9,7 +9,7 @@ module.exports = (cmd) => {
         rootDir: PATHS.projectDirectory,
         preset: "ts-jest",
         setupFilesAfterEnv: [require.resolve("@testing-library/react/cleanup-after-each")],
-        testMatch: ["<rootDir>/tests/**/*.(spec|test).ts?(x)", "**/__tests__/**/*.(spec|test).ts?(x)"],
+        testMatch: ["<rootDir>/tests/**/*.(spec|test).ts?(x)", "<rootDir>/src/**/*.(spec|test).ts?(x)", "**/__tests__/**/*.(spec|test).ts?(x)"],
         moduleNameMapper: {
             "\\.(css|scss)$": require.resolve("identity-obj-proxy"),
             "^.+\\.svg$": require.resolve("jest-svg-transformer"),

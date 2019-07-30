@@ -4,6 +4,7 @@ const chalk = require("chalk").default;
 const fs = require("fs-extra");
 const { spawnAsync } = require("../tools");
 const envinfo = require("envinfo");
+const packageInfo = require("../package.json");
 
 /**
  * 更新package文件
@@ -15,6 +16,7 @@ function updatePackageFile(appDir, cmd) {
     const packageJson = fs.readJSONSync(packagePath);
     packageJson.name = cmd.name;
     packageJson.description = cmd.desc;
+    packageJson.devDependencies["react-admin-boot"] = packageInfo.version;
 
     fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 4));
     fs.renameSync(packagePath, path.join(appDir, "package.json"));

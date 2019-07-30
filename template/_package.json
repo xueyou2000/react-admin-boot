@@ -16,7 +16,8 @@
         "@types/node": "11.9.4",
         "@types/react": "16.8.2",
         "@types/react-dom": "16.8.2",
-        "react-admin-boot": "^0.0.1"
+        "@testing-library/react": "^8.0.7",
+        "react-admin-boot": "^0.0.13"
     },
     "dependencies": {
         "react": "^16.8.2",
