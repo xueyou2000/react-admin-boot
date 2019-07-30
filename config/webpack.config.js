@@ -50,9 +50,7 @@ module.exports = (config, devMode, cmd) => {
                 },
                 {
                     test: /\.css$/,
-                    loaders: devMode
-                        ? [require.resolve("style-loader"), require.resolve("css-loader")]
-                        : [MiniCssExtractPlugin.loader, require.resolve("style-loader"), require.resolve("css-loader")],
+                    loaders: devMode ? [require.resolve("style-loader"), require.resolve("css-loader")] : [MiniCssExtractPlugin.loader, require.resolve("css-loader")],
                 },
                 {
                     test: /\.scss$/,
@@ -142,12 +140,7 @@ module.exports = (config, devMode, cmd) => {
  */
 function getPlugins(config, devMode, cmd) {
     let environmentPlugins = [];
-    const basePlugins = [
-        webpackVariablePlugin(config),
-        new CaseSensitivePathsPlugin(),
-        new HardSourceWebpackPlugin(),
-        new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }]),
-    ];
+    const basePlugins = [webpackVariablePlugin(config), new CaseSensitivePathsPlugin(), new HardSourceWebpackPlugin(), new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }])];
     if (!cmd.multiple) {
         basePlugins.push(
             new HtmlWebpackPlugin({
