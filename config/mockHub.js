@@ -8,6 +8,7 @@ let mocks = {};
 glob.sync(path.join(PATHS.projectDirectory, "./!(index).js")).forEach((filePath) => {
     const mock = require(filePath);
     mocks = { ...mocks, ...mock };
+    console.log("mock file ", filePath);
 });
 
 const proxy = {

@@ -5,6 +5,7 @@ const PATHS = require("../config/path");
 const os = require("os");
 const apiMocker = require("mocker-api");
 const fs = require("fs-extra");
+const glob = require("glob");
 
 /**
  * 获取内网ip
@@ -90,28 +91,24 @@ function converWebpackConfig(config, cmd) {
         const proxy = {};
         const proxyConfig = webpack.devServer.proxy;
         // 转换代理配置
-        for (let path in proxyConfig) {
-            proxy[path] = { target: proxyConfig[path] };
-            proxy[`${baseUrl}${path}`] = {
-                target: proxyConfig[path],
-                pathRewrite: {
-                    [`${baseUrl}${path}`]: path,
-                },
-            };
-            proxy[`${baseUrl}/${path}`] = {
-                target: proxyConfig[path],
-                pathRewrite: {
-                    [`${baseUrl}/${path}`]: path,
-                },
-            };
+        if (!cmd.mock) {
+            for (let path in proxyConfig) {
+                proxy[path] = { target: proxyConfig[path] };
+                if (publicPath.split("/").length >= 3) {
+                    proxy[`${publicPath}${path}`] = {
+                        target: proxyConfig[path],
+                        pathRewrite: {
+                            [`${publicPath}${path}`]: path,
+                        },
+                    };
+                }
+            }
         }
         webpack.devServer.proxy = proxy;
 
         if (cmd.mock) {
             webpack.devServer.before = function before(app) {
-                apiMocker(app, PATHS.resolveAdminBoot("config/mockHub.js"), {
-                    changeHost: true,
-                });
+                apiMocker(app, glob.sync(path.join(PATHS.projectDirectory, "/mocks/!(index).js")));
             };
         }
     }
@@ -123,7 +120,7 @@ function converWebpackConfig(config, cmd) {
  * 合并postcss配置
  */
 function postcssConfig() {
-    if (fs.exists(PATHS.resolveProject("config/postcss.config.js"))) {
+    if (fs.existsSync(PATHS.resolveProject("config/postcss.config.js"))) {
         return PATHS.resolveProject("config");
     } else {
         return PATHS.resolveAdminBoot("config");

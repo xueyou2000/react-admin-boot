@@ -1,5 +1,6 @@
 # webpack 配置
 webpack:
+    entry: ./src/main.tsx
     mode: development
     devtool: inline-source-map
     output:

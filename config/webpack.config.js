@@ -127,7 +127,7 @@ module.exports = (config, devMode, cmd) => {
         plugins: getPlugins(config, devMode, cmd).concat(htmlWebpackPlugins),
     };
 
-    if (fs.exists(PATHS.resolveProject("config/webpack.config.js"))) {
+    if (fs.existsSync(PATHS.resolveProject("config/webpack.config.js"))) {
         const customConfig = require(PATHS.resolveProject("config/webpack.config.js"));
         return customConfig(baseConfig, devMode, cmd);
     } else {

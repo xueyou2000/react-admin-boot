@@ -11,4 +11,4 @@ webpack:
 
 # 环境变量
 variable:
-    NODE_ENV: development
+    NODE_ENV: production
