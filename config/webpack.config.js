@@ -17,7 +17,7 @@ const fs = require("fs-extra");
 
 module.exports = (config, devMode, cmd) => {
     const { webpack } = config;
-    const { entries, htmlWebpackPlugins } = cmd.multiple ? findPages(webpack) : { entries: webpack.entry, htmlWebpackPlugins: [] };
+    const { entries, htmlWebpackPlugins } = cmd.multiple ? findPages(config, devMode) : { entries: webpack.entry, htmlWebpackPlugins: [] };
 
     const baseConfig = {
         context: PATHS.projectDirectory,
@@ -113,9 +113,9 @@ module.exports = (config, devMode, cmd) => {
             runtimeChunk: "single",
             splitChunks: {
                 cacheGroups: {
-                    bundle: {
+                    vendors: {
                         test: /[\\/]node_modules[\\/]/,
-                        name: "bundle",
+                        name: "vendors",
                         chunks: "initial",
                         priority: -10,
                     },
@@ -140,7 +140,12 @@ module.exports = (config, devMode, cmd) => {
  */
 function getPlugins(config, devMode, cmd) {
     let environmentPlugins = [];
-    const basePlugins = [webpackVariablePlugin(config), new CaseSensitivePathsPlugin(), new HardSourceWebpackPlugin(), new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }])];
+    const basePlugins = [
+        webpackVariablePlugin(config),
+        new CaseSensitivePathsPlugin(),
+        new HardSourceWebpackPlugin(),
+        new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }]),
+    ];
     if (!cmd.multiple) {
         basePlugins.push(
             new HtmlWebpackPlugin({
@@ -188,7 +193,7 @@ function webpackVariablePlugin(config) {
  * 寻找页面
  * @param config    配置
  */
-function findPages(webpack) {
+function findPages(config, devMode) {
     const entries = {};
     const htmlWebpackPlugins = [];
 
@@ -206,8 +211,9 @@ function findPages(webpack) {
                 template: pageConfig.userDefaultPage ? PATHS.resolveProject("resources/template.html") : `${dirname}/index.html`,
                 inject: true,
                 title: pageConfig.title,
-                publicPath: webpack.output.publicPath,
+                publicPath: config.webpack.output.publicPath,
                 env: devMode ? "development" : "production",
+                chunks: config.chunks ? [].concat(config.chunks, name) : ["vendors", name],
             }),
         );
     });
