@@ -15,7 +15,7 @@ function findHost() {
     var host = null;
     for (var dev in ifaces) {
         ifaces[dev].forEach(function(details, alias) {
-            if (details.family == "IPv4" && details.address.indexOf("192.168") !== -1) {
+            if (host == null && details.family == "IPv4" && details.address.indexOf("192.168") !== -1) {
                 host = details.address;
             }
         });
