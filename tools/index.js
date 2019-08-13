@@ -87,6 +87,7 @@ function converWebpackConfig(config, cmd) {
         disableHostCheck: true,
         quiet: true,
         publicPath: publicPath,
+        openPage: readConfig(config, "webpack.devServer.openPage"),
         // contentBase: PATHS.projectDirectory,
     };
 
@@ -104,12 +105,13 @@ function converWebpackConfig(config, cmd) {
         // 转换代理配置
         if (!cmd.mock) {
             for (let path in proxyConfig) {
-                proxy[path] = { target: proxyConfig[path] };
+                const val = readConfig(config, `webpack.devServer.proxy.${path}`);
+                proxy[path] = { target: val };
                 if (publicPath.split("/").length >= 3) {
                     // 去掉 /chat/** 末尾的 /**
                     const pathRewrite = /\/\*\*$/.test(path) ? path.replace(/\/\*\*$/, "") : path;
                     proxy[`${baseUrl}${path}`] = {
-                        target: proxyConfig[path],
+                        target: val,
                         pathRewrite: {
                             [`${baseUrl}${path}`]: pathRewrite,
                         },
