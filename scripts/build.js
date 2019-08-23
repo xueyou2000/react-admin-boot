@@ -13,19 +13,24 @@ module.exports = (cmd) => {
     const config = converWebpackConfig(_.merge({}, configByBootYml(cmd.env), configByProjectYml(cmd.env)), cmd);
     const webpackConfig = createWebpackConfig(config, false, cmd);
     webpack(webpackConfig, (err, stats) => {
-        process.stdout.write(
-            stats.toString({
-                colors: true,
-                modules: false,
-                children: false,
-                chunks: false,
-                chunkModules: false,
-            }) + "\n\n",
-        );
-        if (stats.hasErrors()) {
-            console.log(chalk.red("=============编译错误=============\n"));
-            process.exit(1);
+        if (stats) {
+            process.stdout.write(
+                stats.toString({
+                    colors: true,
+                    modules: false,
+                    children: false,
+                    chunks: false,
+                    chunkModules: false,
+                }) + "\n\n",
+            );
+            if (stats.hasErrors()) {
+                console.log(chalk.red("=============编译错误=============\n"));
+                process.exit(1);
+            } else {
+                console.log(chalk.cyan("=============编译完毕=============\n"));
+            }
+        } else {
+            process.stderr.write(err);
         }
-        console.log(chalk.cyan("=============编译完毕=============\n"));
     });
 };
