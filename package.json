@@ -1,6 +1,6 @@
 {
     "name": "react-admin-boot",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "description": "快速搭建一个`React` + `TypeScript`项目脚手架",
     "main": "bin/cli.js",
     "license": "MIT",
@@ -65,7 +65,7 @@
         "webpack": "^4.37.0",
         "webpack-bundle-analyzer": "3.0.3",
         "webpack-cli": "^3.3.6",
-        "webpack-dev-server": "^3.7.2",
+        "webpack-dev-server": "3.7.2",
         "webpack-manifest-plugin": "^2.0.4",
         "commander": "^2.20.0",
         "chalk": "^2.4.2",

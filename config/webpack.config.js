@@ -155,6 +155,7 @@ function getPlugins(config, devMode, cmd) {
                 title: config.title,
                 publicPath: config.webpack.output.publicPath,
                 env: devMode ? "development" : "production",
+                ...config.html,
             }),
         );
     }
@@ -204,7 +205,8 @@ function findPages(config, devMode) {
 
         console.log("✔ \t", pageConfig);
 
-        entries[name] = `${dirname}/index.tsx`;
+        // entries[name] = `${dirname}/index.tsx`;
+        entries[name] = `./src/pages/${name}/index.tsx`;
         htmlWebpackPlugins.push(
             new HtmlWebpackPlugin({
                 filename: `${name}.html`,

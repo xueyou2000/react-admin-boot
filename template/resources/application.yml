@@ -6,3 +6,7 @@ webpack:
 
 # 标题
 title: MyApp
+
+# htmlWebpackPlugins配置
+html:
+    filename: "index.html"

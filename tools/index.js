@@ -106,7 +106,11 @@ function converWebpackConfig(config, cmd) {
         if (!cmd.mock) {
             for (let path in proxyConfig) {
                 const val = readConfig(config, `webpack.devServer.proxy.${path}`);
-                proxy[path] = { target: val };
+                if (typeof val === "string") {
+                    proxy[path] = { target: val };
+                } else {
+                    proxy[path] = val;
+                }
                 if (publicPath.split("/").length >= 3) {
                     // 去掉 /chat/** 末尾的 /**
                     const pathRewrite = /\/\*\*$/.test(path) ? path.replace(/\/\*\*$/, "") : path;
