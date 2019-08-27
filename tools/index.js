@@ -100,26 +100,31 @@ function converWebpackConfig(config, cmd) {
         if (cmd.port) {
             webpack.devServer.port = cmd.port;
         }
-        const proxy = {};
+        let proxy;
         const proxyConfig = webpack.devServer.proxy;
         // 转换代理配置
         if (!cmd.mock) {
-            for (let path in proxyConfig) {
-                const val = readConfig(config, `webpack.devServer.proxy.${path}`);
-                if (typeof val === "string") {
-                    proxy[path] = { target: val };
-                } else {
-                    proxy[path] = val;
-                }
-                if (publicPath.split("/").length >= 3) {
-                    // 去掉 /chat/** 末尾的 /**
-                    const pathRewrite = /\/\*\*$/.test(path) ? path.replace(/\/\*\*$/, "") : path;
-                    proxy[`${baseUrl}${path}`] = {
-                        target: val,
-                        pathRewrite: {
-                            [`${baseUrl}${path}`]: pathRewrite,
-                        },
-                    };
+            if (proxyConfig instanceof Array) {
+                proxy = proxyConfig;
+            } else {
+                proxy = {};
+                for (let path in proxyConfig) {
+                    const val = readConfig(config, `webpack.devServer.proxy.${path}`);
+                    if (typeof val === "string") {
+                        proxy[path] = { target: val };
+                    } else {
+                        proxy[path] = val;
+                    }
+                    if (publicPath.split("/").length >= 3) {
+                        // 去掉 /chat/** 末尾的 /**
+                        const pathRewrite = /\/\*\*$/.test(path) ? path.replace(/\/\*\*$/, "") : path;
+                        proxy[`${baseUrl}${path}`] = {
+                            target: val,
+                            pathRewrite: {
+                                [`${baseUrl}${path}`]: pathRewrite,
+                            },
+                        };
+                    }
                 }
             }
         }

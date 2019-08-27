@@ -1,6 +1,6 @@
 {
     "name": "react-admin-boot",
-    "version": "0.0.22",
+    "version": "0.0.23",
     "description": "快速搭建一个`React` + `TypeScript`项目脚手架",
     "main": "bin/cli.js",
     "license": "MIT",
