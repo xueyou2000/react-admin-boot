@@ -1,6 +1,7 @@
 const path = require("path");
 const PATHS = require("../config/path");
 const jest = require("jest");
+const _ = require("lodash");
 
 module.exports = (cmd) => {
     const args = process.argv.slice(3);
@@ -20,7 +21,7 @@ module.exports = (cmd) => {
             "^.+\\.(ts|tsx)$": require.resolve("ts-jest"),
         },
     };
-    const overrides = Object.assign({}, jestConfig, require(path.resolve(PATHS.projectDirectory, "package.json")).jest);
+    const overrides = _.merge({}, jestConfig, require(path.resolve(PATHS.projectDirectory, "package.json")).jest);
 
     argv.push("--config", JSON.stringify(overrides));
     argv = argv.concat(args);
