@@ -5,6 +5,8 @@ webpack:
     output:
         publicPath: /
         filename: js/[name]-[contenthash:5].js
+        chunkFilename: js/[name]-[contenthash:5].js
+
     externals:
         react: React
         react-dom: ReactDOM

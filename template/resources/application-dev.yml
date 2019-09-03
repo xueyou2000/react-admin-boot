@@ -5,7 +5,6 @@ webpack:
     devtool: inline-source-map
     output:
         publicPath: /
-        filename: js/[name].js
     devServer:
         port: 8080
         # proxy:
