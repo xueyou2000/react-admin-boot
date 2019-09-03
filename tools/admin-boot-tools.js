@@ -10,9 +10,13 @@ const _ = require("lodash");
 function configByBootYml(env) {
     const resources = "template/resources";
 
-    const baseConfig = YAML.parse(fs.readFileSync(PATHS.resolveAdminBoot(`${resources}/application.yml`), { encoding: "UTF-8" }));
-    const envConfig = YAML.parse(fs.readFileSync(PATHS.resolveAdminBoot(`${resources}/application-${env}.yml`), { encoding: "UTF-8" }));
+    const envFile = PATHS.resolveAdminBoot(`${resources}/application-${env}.yml`);
+    let envConfig = {};
+    if (fs.existsSync(envFile)) {
+        envConfig = YAML.parse(fs.readFileSync(envFile, { encoding: "UTF-8" }));
+    }
 
+    const baseConfig = YAML.parse(fs.readFileSync(PATHS.resolveAdminBoot(`${resources}/application.yml`), { encoding: "UTF-8" }));
     return _.merge({}, baseConfig, envConfig);
 }
 
