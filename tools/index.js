@@ -48,7 +48,12 @@ function readConfig(config, path) {
  */
 function spawnAsync(command, args, options) {
     return new Promise((resolve, reject) => {
-        const child = spawn(command, args, options);
+        const opt = options;
+        if (opt && opt.env) {
+            opt.env = Object.assign(process.env, opt.env);
+        }
+
+        const child = spawn(command, args, opt);
         child.on("close", (code) => {
             if (code !== 0) {
                 reject(new Error(`command: ${command} ${args.toString()}`));
