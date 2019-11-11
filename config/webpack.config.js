@@ -140,12 +140,7 @@ module.exports = (config, devMode, cmd) => {
  */
 function getPlugins(config, devMode, cmd) {
     let environmentPlugins = [];
-    const basePlugins = [
-        webpackVariablePlugin(config),
-        new CaseSensitivePathsPlugin(),
-        new HardSourceWebpackPlugin(),
-        new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }]),
-    ];
+    const basePlugins = [webpackVariablePlugin(config), new CaseSensitivePathsPlugin(), new HardSourceWebpackPlugin(), new CopyWebpackPlugin([{ from: PATHS.resolveProject("static/**/*"), to: config.webpack.output.path }])];
     if (!cmd.multiple) {
         basePlugins.push(
             new HtmlWebpackPlugin({
@@ -183,7 +178,10 @@ function getPlugins(config, devMode, cmd) {
  * @param {*} config
  */
 function webpackVariablePlugin(config) {
-    const variable = {};
+    const variable = {
+        "process.env.publicPath": config.webpack.output.publicPath,
+    };
+
     for (let variableName in config.variable) {
         variable[`process.env.${variableName}`] = JSON.stringify(readConfig(config, `variable.${variableName}`));
     }
